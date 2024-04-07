@@ -17,7 +17,7 @@ A plataforma deve conter:
 - Cálculo de média final de cada aluno por disciplina.
 
 Para uma especificação básica das entidade, siga o seguinte diagrama:
-![MER](https://drive.google.com/file/d/1N7dISs4QS2E2CcZaSquAk-iitTvUj-01/view?usp=sharing)
+![MER](https://github.com/danielSteinheisen/MiniProjeto2/blob/main/MER.png)
 
 ### Ex 2 - CRUD Alunos
 Criar CRUD para a entidade Aluno.

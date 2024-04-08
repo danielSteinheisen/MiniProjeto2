@@ -2,11 +2,15 @@ package br.com.fullstackeducation.miniprojeto2.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "disciplina")
-public class DisciplinaEntity {
+@NoArgsConstructor
+@Table(name = "alunos")
+public class AlunoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,7 +19,8 @@ public class DisciplinaEntity {
     @JoinColumn(name = "nome", nullable = false)
     private String nome;
 
-    @ManyToOne
-    @JoinColumn(name = "professor_id", nullable = false)
-    private  ProfessorEntity professorId;
+    @JoinColumn(name = "nascimento", nullable = false)
+    private Date nascimento;
+
+
 }

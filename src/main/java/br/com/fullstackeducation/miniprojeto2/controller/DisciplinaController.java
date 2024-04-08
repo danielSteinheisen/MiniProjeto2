@@ -1,7 +1,7 @@
 package br.com.fullstackeducation.miniprojeto2.controller;
 
 import br.com.fullstackeducation.miniprojeto2.entity.DisciplinaEntity;
-import br.com.fullstackeducation.miniprojeto2.service.DisciplinaService;
+import br.com.fullstackeducation.miniprojeto2.service.DisciplinaServiceImpl;
 import br.com.fullstackeducation.miniprojeto2.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,10 +16,10 @@ import java.util.List;
 public class DisciplinaController {
 
 
-    private final DisciplinaService disciplinaService;
+    private final DisciplinaServiceImpl disciplinaServiceImpl;
 
-    public DisciplinaController(DisciplinaService disciplinaService) {
-        this.disciplinaService = disciplinaService;
+    public DisciplinaController(DisciplinaServiceImpl disciplinaServiceImpl) {
+        this.disciplinaServiceImpl = disciplinaServiceImpl;
     }
 
     @PostMapping
@@ -28,19 +28,19 @@ public class DisciplinaController {
         log.info("POST /Disciplinas -> Cadastrada");
         log.info("POST /Disciplinas -> 201 CREATED");
         log.info("POST /Disciplinas -> Response Body: \n{}\n", JsonUtil
-                .objetoParaJson(disciplinaService.criarDisciplina(disciplina)));
+                .objetoParaJson(disciplinaServiceImpl.criarDisciplina(disciplina)));
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(disciplinaService.criarDisciplina(disciplina));
+                .body(disciplinaServiceImpl.criarDisciplina(disciplina));
     }
 
     @GetMapping
     public ResponseEntity<List<DisciplinaEntity>> listarDisciplinas() {
         log.info("GET/disciplinas -> Início");
-        log.info("GET/disciplinas -> Encontrados {} registros", disciplinaService.listarDisciplinas().size());
+        log.info("GET/disciplinas -> Encontrados {} registros", disciplinaServiceImpl.listarDisciplinas().size());
         log.info("GET/disciplinas -> 200 ok");
         log.info("GET/disciplinas -> Response Body: \n{}\n", JsonUtil
-                .objetoParaJson(disciplinaService.listarDisciplinas()));
-        return ResponseEntity.ok(disciplinaService.listarDisciplinas());
+                .objetoParaJson(disciplinaServiceImpl.listarDisciplinas()));
+        return ResponseEntity.ok(disciplinaServiceImpl.listarDisciplinas());
     }
 
     @GetMapping("/{id}")
@@ -49,8 +49,8 @@ public class DisciplinaController {
         log.info("GET /Disciplinas/{} -> Encontradas", id);
         log.info("GET /Disciplinas/{} -> 200 OK", id);
         log.debug("GET /Disciplinas/{} -> Response Body:\n{}\n", id, JsonUtil
-                .objetoParaJson(disciplinaService.buscarDisciplinaPorId(id)));
-        return ResponseEntity.ok(disciplinaService.buscarDisciplinaPorId(id));
+                .objetoParaJson(disciplinaServiceImpl.buscarDisciplinaPorId(id)));
+        return ResponseEntity.ok(disciplinaServiceImpl.buscarDisciplinaPorId(id));
     }
 
     @PutMapping("/{id}")
@@ -59,8 +59,8 @@ public class DisciplinaController {
         log.info("PUT /Disciplinas/{} -> Atualizada", id);
         log.info("PUT /Disciplinas/{} -> 200 OK", id);
         log.debug("PUT /Disciplinas/{} -> Response Body:\n{}\n", id, JsonUtil
-                .objetoParaJson(disciplinaService.atualizarDisciplina(id, disciplina)));
-        return ResponseEntity.ok(disciplinaService.atualizarDisciplina(id, disciplina));
+                .objetoParaJson(disciplinaServiceImpl.atualizarDisciplina(id, disciplina)));
+        return ResponseEntity.ok(disciplinaServiceImpl.atualizarDisciplina(id, disciplina));
     }
 
     @DeleteMapping("/{id}")
@@ -68,7 +68,7 @@ public class DisciplinaController {
         log.info("DELETE /Disciplinas/{}", id);
         log.info("DELETE /Disciplinas/{} -> Excluída", id);
         log.info("DELETE /Disciplinas/{} -> 204 No Content", id);
-        disciplinaService.excluirDisciplina(id);
+        disciplinaServiceImpl.excluirDisciplina(id);
         return ResponseEntity.noContent().build();
     }
 }

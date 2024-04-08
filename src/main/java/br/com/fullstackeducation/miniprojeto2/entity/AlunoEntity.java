@@ -4,27 +4,31 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Table(name = "aluno")
 @Entity
 @Data
 @NoArgsConstructor
-public class AlunoEntity {
+public class AlunoEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 150)
     private String nome;
-    private Date nascimento;
 
-    public AlunoEntity(String nome, Date nascimento) {
+    private LocalDate nascimento;
+
+    public AlunoEntity(String nome, LocalDate nascimento) {
         this.nome = nome;
         this.nascimento = nascimento;
     }
 
-    public AlunoEntity(Long id, String nome, Date nascimento) {
+    public AlunoEntity(Long id, String nome, LocalDate nascimento) {
         this.id = id;
         this.nome = nome;
         this.nascimento = nascimento;

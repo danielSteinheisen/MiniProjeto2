@@ -1,24 +1,25 @@
 package br.com.fullstackeducation.miniprojeto2.service;
 
+import br.com.fullstackeducation.miniprojeto2.dto.ProfessorFiltro;
 import br.com.fullstackeducation.miniprojeto2.entity.ProfessorEntity;
-import br.com.fullstackeducation.miniprojeto2.exception.NotFoundException;
+import br.com.fullstackeducation.miniprojeto2.exception.error.NotFoundException;
+import br.com.fullstackeducation.miniprojeto2.exception.error.ProfessorByNomeNotFoundException;
 import br.com.fullstackeducation.miniprojeto2.repository.ProfessorRepository;
 import br.com.fullstackeducation.miniprojeto2.util.JsonUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ProfessorServiceImpl  implements ProfessorService {
 
     private final ProfessorRepository professorRepository;
-
-    public ProfessorServiceImpl(ProfessorRepository professorRepository) {
-        this.professorRepository = professorRepository;
-    }
 
     @Override
     public ProfessorEntity criarProfessor(ProfessorEntity professorNovo) {
@@ -31,13 +32,20 @@ public class ProfessorServiceImpl  implements ProfessorService {
     }
 
     @Override
-    public List<ProfessorEntity> listarProfessores() {
-        log.info("Buscando todos os professores");
-        List<ProfessorEntity> professores = professorRepository.findAll();
-        log.info("Buscando todos os professores -> {} professores encontrados",
-                professorRepository.findAll().size());
+    public List<ProfessorEntity> listarProfessores(ProfessorFiltro filtro) {
+        List<ProfessorEntity> professores;
+
+        if (StringUtils.hasText(filtro.getNome())) {
+            log.info("Buscando todos os professores -> com nome ({})", filtro.getNome());
+            professores = professorRepository.findByNomeContainingIgnoreCase(filtro.getNome());
+        } else {
+            log.info("Buscando todos os professores");
+            professores = professorRepository.findAll();
+        }
+
+        log.info("Buscando todos os professores -> {} professores encontrados", professores.size());
         log.debug("Buscando todos os professores -> Registros encontrados:\n{}\n",
-                JsonUtil.objetoParaJson(professorRepository));
+                JsonUtil.objetoParaJson(professores));
         return professores;
     }
 
@@ -53,19 +61,34 @@ public class ProfessorServiceImpl  implements ProfessorService {
         log.info("Buscando professor por id ({}) -> Encontrado", id);
         log.debug("Buscando professor por id ({}) -> Registro encontrado:\n{}\n", id, JsonUtil.objetoParaJson(professor.get()));
         return professor.get();
+    }
 
+    public ProfessorEntity buscarProfessorPorNome(String nome) {
+        log.info("Buscando professor por Nome: {}", nome);
+        Optional<ProfessorEntity> opt = professorRepository.findTop1ByNome(nome);
+
+        if (opt.isEmpty()) {
+            log.error("Buscando professor por nome {} -> NÃO Encontrado", nome);
+            throw new ProfessorByNomeNotFoundException(nome);
+        }
+
+        log.info("Buscando professor por nome ({}) -> Encontrado", nome);
+        log.debug("Buscando professor por nome ({}) -> Registro encontrado:\n{}\n", nome,
+                JsonUtil.objetoParaJson(opt.get()));
+        return opt.get();
     }
 
     @Override
     public ProfessorEntity atualizarProfessor(Long id, ProfessorEntity professor) {
-        if (!professorRepository.existsById(id)) {
-            log.info("Alterando professor com id ({}) -> Salvar: \n{}\n", id, JsonUtil.objetoParaJson(professor));
-            throw new NotFoundException("Professor não encontrado com o ID: " + id);
-        }
-        professor.setId(id);
+        ProfessorEntity entity = buscarProfessorPorId(id);
+        entity.setNome(professor.getNome());
+
+        log.info("Alterando professor com id ({}) -> Salvar: \n{}\n", id, JsonUtil.objetoParaJson(entity));
+        entity = professorRepository.save(entity);
+
         log.info("Alterando professor -> Salvo com sucesso");
-        log.debug("Alterando professor -> Registro Salvo: \n{}\n", JsonUtil.objetoParaJson(professor));
-        return professorRepository.save(professor);
+        log.debug("Alterando professor -> Registro Salvo: \n{}\n", JsonUtil.objetoParaJson(entity));
+        return entity;
     }
 
     @Override

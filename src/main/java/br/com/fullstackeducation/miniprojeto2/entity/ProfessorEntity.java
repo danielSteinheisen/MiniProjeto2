@@ -4,18 +4,19 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "professor")
+@Table(name = "professores")
 
-public class ProfessorEntity {
+public class ProfessorEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @JoinColumn(name = "nome", nullable = false)
+    @Column(nullable = false, length = 150)
     private String nome;
-
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "disciplina")
+@Table(name = "disciplinas")
 
 public class DisciplinaEntity {
 
@@ -13,11 +13,11 @@ public class DisciplinaEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @JoinColumn(name = "nome", nullable = false)
+    @Column(nullable = false, length = 150)
     private String nome;
 
     @ManyToOne
     @JoinColumn(name = "professor_id", nullable = false)
-    private  ProfessorEntity professorId;
+    private  ProfessorEntity professor_id;
 
 }

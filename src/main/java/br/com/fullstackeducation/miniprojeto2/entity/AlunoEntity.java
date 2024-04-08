@@ -6,27 +6,21 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Table(name = "aluno")
-@Entity
 @Data
+@Entity
 @NoArgsConstructor
+@Table(name = "alunos")
+
 public class AlunoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @JoinColumn(name = "nome", nullable = false)
     private String nome;
+
+    @JoinColumn(name = "nascimento", nullable = false)
     private Date nascimento;
 
-    public AlunoEntity(String nome, Date nascimento) {
-        this.nome = nome;
-        this.nascimento = nascimento;
-    }
-
-    public AlunoEntity(Long id, String nome, Date nascimento) {
-        this.id = id;
-        this.nome = nome;
-        this.nascimento = nascimento;
-    }
 }

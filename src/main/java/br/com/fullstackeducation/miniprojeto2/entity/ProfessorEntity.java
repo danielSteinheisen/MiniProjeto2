@@ -4,24 +4,18 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Table(name = "professor")
-@Entity
 @Data
+@Entity
 @NoArgsConstructor
+@Table(name = "professor")
+
 public class ProfessorEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @JoinColumn(name = "nome", nullable = false)
     private String nome;
 
-    public ProfessorEntity(String nome) {
-        this.nome = nome;
-    }
-
-    public ProfessorEntity(Long id, String nome) {
-        this.id = id;
-        this.nome = nome;
-    }
 }

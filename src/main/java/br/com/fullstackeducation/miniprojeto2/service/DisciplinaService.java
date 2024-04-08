@@ -1,9 +1,15 @@
 package br.com.fullstackeducation.miniprojeto2.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import br.com.fullstackeducation.miniprojeto2.entity.DisciplinaEntity;
 
-@Service
-@RequiredArgsConstructor
-public class DisciplinaService {
+import java.util.List;
+
+public interface DisciplinaService {
+
+    public DisciplinaEntity criarDisciplina(DisciplinaEntity disciplina);
+    public List<DisciplinaEntity> listarDisciplinas();
+    public DisciplinaEntity buscarDisciplinaPorId(Long id);
+    public DisciplinaEntity atualizarDisciplina(Long id, DisciplinaEntity disciplina);
+    public void excluirDisciplina(Long id);
+
 }

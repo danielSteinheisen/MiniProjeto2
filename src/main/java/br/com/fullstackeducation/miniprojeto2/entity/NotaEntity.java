@@ -3,11 +3,15 @@ package br.com.fullstackeducation.miniprojeto2.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
-@Table(name = "nota")
-@Entity
+import java.math.BigDecimal;
+
 @Data
+@Entity
 @NoArgsConstructor
+@Table(name = "notas")
+
 public class NotaEntity {
 
     @Id
@@ -22,6 +26,10 @@ public class NotaEntity {
     @JoinColumn(name = "professor_id")
     private ProfessorEntity professor;
 
+    @JoinColumn(name = "nota", nullable = false)
     private float nota;
-    private double coeficiente;
+
+    @ColumnDefault(value = "0.00")
+    @Column(precision = 19,scale = 6, nullable = false)
+    private BigDecimal coeficiente;
 }

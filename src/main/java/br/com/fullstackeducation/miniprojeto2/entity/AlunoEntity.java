@@ -4,23 +4,22 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.sql.Date;
+import java.time.LocalDate;
 
 @Data
 @Entity
 @NoArgsConstructor
 @Table(name = "alunos")
-
 public class AlunoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "nome", nullable = false)
+    @Column(nullable = false, length = 150)
     private String nome;
 
-    @JoinColumn(name = "nascimento", nullable = false)
+    @Column
     private Date nascimento;
-
 }

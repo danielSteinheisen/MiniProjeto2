@@ -1,4 +1,4 @@
-package br.com.fullstackeducation.miniprojeto2.exception;
+package br.com.fullstackeducation.miniprojeto2.exception.error;
 
 public class NotFoundException extends RuntimeException{
 

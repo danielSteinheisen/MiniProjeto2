@@ -11,4 +11,5 @@ public interface ProfessorService {
     ProfessorEntity buscarProfessorPorId(Long id);
     ProfessorEntity atualizarProfessor(Long id, ProfessorEntity professor);
     void excluirProfessor(Long id);
+
 }

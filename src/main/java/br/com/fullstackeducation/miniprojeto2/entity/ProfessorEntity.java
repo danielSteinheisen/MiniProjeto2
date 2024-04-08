@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Table(name = "professor")
+
 public class ProfessorEntity {
 
     @Id
@@ -16,6 +17,5 @@ public class ProfessorEntity {
 
     @JoinColumn(name = "nome", nullable = false)
     private String nome;
-
 
 }

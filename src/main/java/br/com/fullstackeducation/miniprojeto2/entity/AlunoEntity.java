@@ -10,6 +10,7 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @Table(name = "alunos")
+
 public class AlunoEntity {
 
     @Id
@@ -21,6 +22,5 @@ public class AlunoEntity {
 
     @JoinColumn(name = "nascimento", nullable = false)
     private Date nascimento;
-
 
 }

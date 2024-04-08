@@ -11,4 +11,5 @@ public interface DisciplinaService {
     public DisciplinaEntity buscarDisciplinaPorId(Long id);
     public DisciplinaEntity atualizarDisciplina(Long id, DisciplinaEntity disciplina);
     public void excluirDisciplina(Long id);
+
 }

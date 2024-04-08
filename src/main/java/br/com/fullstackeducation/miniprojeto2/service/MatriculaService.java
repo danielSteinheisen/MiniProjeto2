@@ -17,4 +17,5 @@ public interface MatriculaService {
 
     List<MatriculaEntity> buscarMatriculasPorDisciplina(Long disciplinaId);
     void excluirMatricula(Long id);
+
 }

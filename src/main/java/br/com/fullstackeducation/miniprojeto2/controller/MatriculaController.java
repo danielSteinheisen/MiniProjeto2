@@ -101,6 +101,4 @@ public class MatriculaController {
         return ResponseEntity.noContent().build();
         }
     }
-
 }
-

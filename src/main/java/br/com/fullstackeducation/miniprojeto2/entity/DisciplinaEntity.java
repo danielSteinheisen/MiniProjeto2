@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "disciplina")
+
 public class DisciplinaEntity {
 
     @Id
@@ -18,4 +19,5 @@ public class DisciplinaEntity {
     @ManyToOne
     @JoinColumn(name = "professor_id", nullable = false)
     private  ProfessorEntity professorId;
+
 }

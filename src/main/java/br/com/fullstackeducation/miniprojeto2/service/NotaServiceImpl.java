@@ -26,11 +26,11 @@ public class NotaServiceImpl implements NotaService {
         notaNova.setId(null);
         MatriculaEntity matricula = matriculaRepository.findById(matriculaId).orElseThrow(() -> NotFoundException("Matrícula " + matriculaId +" não encontrada!"))
         DisciplinaEntity disciplina = matricula.getDisciplina();
-        if (!disciplina != null) {
+        if (disciplina == null) {
             throw new NotFoundException("Não foi possível encontrar uma disciplina nesta matrícula!")
         }
         ProfessorEntity professor = disciplina.getProfessor();
-        if (!professor != null) {
+        if (professor == null) {
             throw new NotFoundException("Não foi possível encontrar um professor!")
         }
         log.info("Criando nota -> Salvar: \n{}\n", JsonUtil.objetoParaJson(notaNova));
@@ -85,7 +85,14 @@ public class NotaServiceImpl implements NotaService {
             log.info("Excluindo nota com id ({}) -> Excluindo", id);
             throw new NotFoundException("Nota não encontrada com o ID: " + id);
         }
+
+        MatriculaEntity matricula = notaRepository.getMatricula();
+        if (matricula == null) {
+            throw new NotFoundException("Nota não encontrada nesta matrícula!");
+        }
+
         notaRepository.deleteById(id);
+        atualizarMediaFinal(matricula);
         log.info("Excluindo nota com id ({}) -> Excluído com sucesso", id);
 
     }

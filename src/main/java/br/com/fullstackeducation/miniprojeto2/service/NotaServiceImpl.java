@@ -22,13 +22,25 @@ public class NotaServiceImpl implements NotaService {
     }
 
     @Override
-    public NotaEntity criarNota(NotaEntity notaNova) {
+    public NotaEntity criarNota(Long matriculaId, NotaEntity notaNova, BigDecimal coeficiente) {
         notaNova.setId(null);
+        MatriculaEntity matricula = matriculaRepository.findById(matriculaId).orElseThrow(() -> NotFoundException("Matrícula " + matriculaId +" não encontrada!"))
+        DisciplinaEntity disciplina = matricula.getDisciplina();
+        if (!disciplina != null) {
+            throw new NotFoundException("Não foi possível encontrar uma disciplina nesta matrícula!")
+        }
+        ProfessorEntity professor = disciplina.getProfessor();
+        if (!professor != null) {
+            throw new NotFoundException("Não foi possível encontrar um professor!")
+        }
         log.info("Criando nota -> Salvar: \n{}\n", JsonUtil.objetoParaJson(notaNova));
+        notaNova.setProfessor(professor);
+        notaNova.setCoeficiente(coeficiente);
         NotaEntity nota = notaRepository.save(notaNova);
+        atualizarMediaFinal(matricula);
         log.info("Criando nota -> Salvo com sucesso");
         log.debug("Criando nota -> Registro Salvo: \n{}\n", JsonUtil.objetoParaJson(notaNova));
-        return nota;
+        return notaNova;
     }
 
     @Override
@@ -77,4 +89,17 @@ public class NotaServiceImpl implements NotaService {
         log.info("Excluindo nota com id ({}) -> Excluído com sucesso", id);
 
     }
+
+
+    private void atualizarMediaFinal(MatriculaEntity matricula) {
+
+        List<NotaEntity> notas = matricula.getNotas(matriculaId);
+        BigDecimal somaNotas = notas.stream().map(notaNova -> notaNova.getValor().multiply(notaNova.getCoeficiente())).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal somaCoeficientes = notas.stream().map(NotaEntity::getCoeficiente).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal mediaFinal = somaNotas.divide(somaCoeficientes, RoundingMode.HALF_UP);
+
+        matricula.setMediaFinal(mediaFinal);
+        matriculaRepository.save(matricula);
+    }
+
 }

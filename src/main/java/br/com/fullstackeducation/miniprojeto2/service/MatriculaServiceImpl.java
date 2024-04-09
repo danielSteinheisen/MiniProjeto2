@@ -3,42 +3,45 @@ package br.com.fullstackeducation.miniprojeto2.service;
 import br.com.fullstackeducation.miniprojeto2.entity.AlunoEntity;
 import br.com.fullstackeducation.miniprojeto2.entity.DisciplinaEntity;
 import br.com.fullstackeducation.miniprojeto2.entity.MatriculaEntity;
-import br.com.fullstackeducation.miniprojeto2.exception.NotFoundException;
-import br.com.fullstackeducation.miniprojeto2.repository.AlunoRepository;
-import br.com.fullstackeducation.miniprojeto2.repository.DisciplinaRepository;
+import br.com.fullstackeducation.miniprojeto2.entity.NotaEntity;
+import br.com.fullstackeducation.miniprojeto2.exception.error.NotFoundException;
 import br.com.fullstackeducation.miniprojeto2.repository.MatriculaRepository;
 import br.com.fullstackeducation.miniprojeto2.repository.NotaRepository;
 import br.com.fullstackeducation.miniprojeto2.util.JsonUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MatriculaServiceImpl implements MatriculaService {
 
     private final MatriculaRepository matriculaRepository;
-    private final AlunoRepository alunoRepository;
-    private final DisciplinaRepository disciplinaRepository;
+    private final AlunoService alunoService;
+    private final DisciplinaService disciplinaService;
     private final NotaRepository notaRepository;
-
-    public MatriculaServiceImpl(MatriculaRepository matriculaRepository, AlunoRepository alunoRepository, DisciplinaRepository disciplinaRepository, NotaRepository notaRepository) {
-        this.matriculaRepository = matriculaRepository;
-        this.alunoRepository = alunoRepository;
-        this.disciplinaRepository = disciplinaRepository;
-        this.notaRepository = notaRepository;
-    }
 
     @Override
     public MatriculaEntity criarMatricula(MatriculaEntity matriculaNova) {
         matriculaNova.setId(null);
+
         log.info("Criando matrícula -> Salvar: \n{}\n", JsonUtil.objetoParaJson(matriculaNova));
-        MatriculaEntity matricula = matriculaRepository.save(matriculaNova);
+        AlunoEntity aluno = alunoService.buscarAlunoPorId(matriculaNova.getAluno().getId());
+        matriculaNova.setAluno(aluno);
+
+        DisciplinaEntity disciplina = disciplinaService.buscarDisciplinaPorId(matriculaNova.getDisciplina().getId());
+        matriculaNova.setDisciplina(disciplina);
+
         log.info("Criando matrícula -> Salvo com sucesso");
         log.debug("Criando matrícula -> Registro Salvo: \n{}\n", JsonUtil.objetoParaJson(matriculaNova));
-        return matricula;
+        return matriculaRepository.save(matriculaNova);
     }
 
     @Override
@@ -89,6 +92,17 @@ public class MatriculaServiceImpl implements MatriculaService {
         return matriculaRepository.findByAlunoId(idAluno);
     }
 
+    /*
+    public List<MatriculaEntity> mediaGeralPorAluno(Long idAluno) {
+
+        List<NotaEntity> notas = notaRepository.findBy;
+
+
+        //notaService.listarNotas().
+
+        return null; //matriculaRepository.findByAlunoId(idAluno);
+    }*/
+
     @Override
     public List<MatriculaEntity> buscarMatriculasPorDisciplina(Long disciplinaId) {
         return matriculaRepository.findByDisciplinaId(disciplinaId);
@@ -104,18 +118,4 @@ public class MatriculaServiceImpl implements MatriculaService {
         matriculaRepository.deleteById(id);
         log.info("Excluindo matrícula com id ({}) -> Excluído com sucesso", id);
     }
-
-    public MatriculaEntity matricularAlunoEmDisciplina(Long alunoId, Long disciplinaId) {
-        AlunoEntity aluno = alunoRepository.findById(alunoId)
-                .orElseThrow(() -> new NotFoundException("Aluno não encontrado"));
-
-        DisciplinaEntity disciplina = disciplinaRepository.findById(disciplinaId)
-                .orElseThrow(() -> new NotFoundException("Disciplina não encontrada"));
-
-        MatriculaEntity matricula = new MatriculaEntity();
-        matricula.setAluno(aluno);
-        matricula.setDisciplina(disciplina);
-        return matriculaRepository.save(matricula);
-    }
-
 }

@@ -4,17 +4,17 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.sql.Date;
-import java.time.LocalDate;
 
 @Data
 @Entity
 @NoArgsConstructor
 @Table(name = "alunos")
-public class AlunoEntity {
+public class AlunoEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false, length = 150)

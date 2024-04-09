@@ -4,6 +4,7 @@ import br.com.fullstackeducation.miniprojeto2.entity.MatriculaEntity;
 import br.com.fullstackeducation.miniprojeto2.entity.NotaEntity;
 import br.com.fullstackeducation.miniprojeto2.service.NotaServiceImpl;
 import br.com.fullstackeducation.miniprojeto2.util.JsonUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +14,12 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/notas")
 public class NotaController {
 
     private final NotaServiceImpl notaServiceImpl;
 
-    public NotaController(NotaServiceImpl notaServiceImpl) {
-        this.notaServiceImpl = notaServiceImpl;
-    }
     @PostMapping
     public ResponseEntity<NotaEntity> criarNota(@RequestBody NotaEntity nota) {
         log.info("POST /Nota -> Início");
@@ -49,6 +48,21 @@ public class NotaController {
                 .objetoParaJson(notaServiceImpl.buscarNotaPorId(id)));
         return ResponseEntity.ok(notaServiceImpl.buscarNotaPorId(id));
     }
+
+    /*
+    @GetMapping("/matricula/{matriculaId}")
+    public ResponseEntity<List<MatriculaEntity>> buscarNotaPorMatriculasPorAluno(@PathVariable Long alunoId) {
+        List<MatriculaEntity> matriculas = matriculaServiceImpl.buscarMatriculasPorAluno(alunoId);
+        log.info("GET /Matrículas/aluno/{} -> Início", alunoId);
+        log.info("GET /Matrículas/aluno/{} -> Encontradas", alunoId);
+        log.info("GET /Matrículas/aluno/{} -> 200 OK", alunoId);
+        log.debug("GET /Matrículas/aluno/{} -> Response Body:\n{}\n", alunoId, JsonUtil
+                .objetoParaJson(matriculas));
+        return ResponseEntity.ok(matriculas);
+    }
+
+     */
+
     @PutMapping("/{id}")
     public ResponseEntity<NotaEntity> atualizarNota(@PathVariable Long id, @RequestBody NotaEntity nota) {
         log.info("PUT /Notas/{}", id);

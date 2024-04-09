@@ -14,8 +14,7 @@ public interface NotaService {
 
     NotaEntity atualizarNota(Long id, NotaEntity nota);
 
-
+    NotaEntity calcularMedia (Long matriculaId);
 
     void excluirNota(Long id);
-
 }

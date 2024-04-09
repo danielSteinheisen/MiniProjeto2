@@ -27,9 +27,8 @@ public class NotaEntity {
     private ProfessorEntity professor;
 
     @JoinColumn(name = "nota", nullable = false)
-    private float nota;
+    private float nota = 0.00F;
 
-    @ColumnDefault(value = "0.00")
     @Column(precision = 19,scale = 6, nullable = false)
-    private BigDecimal coeficiente;
+    private BigDecimal coeficiente = BigDecimal.valueOf(0.00);
 }

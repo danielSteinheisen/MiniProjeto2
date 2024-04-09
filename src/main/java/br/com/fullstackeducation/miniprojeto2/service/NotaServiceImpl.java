@@ -1,25 +1,52 @@
 package br.com.fullstackeducation.miniprojeto2.service;
 
+import br.com.fullstackeducation.miniprojeto2.entity.DisciplinaEntity;
 import br.com.fullstackeducation.miniprojeto2.entity.MatriculaEntity;
 import br.com.fullstackeducation.miniprojeto2.entity.NotaEntity;
-import br.com.fullstackeducation.miniprojeto2.exception.NotFoundException;
+import br.com.fullstackeducation.miniprojeto2.entity.ProfessorEntity;
+import br.com.fullstackeducation.miniprojeto2.exception.error.NotFoundException;
+import br.com.fullstackeducation.miniprojeto2.repository.MatriculaRepository;
 import br.com.fullstackeducation.miniprojeto2.repository.NotaRepository;
 import br.com.fullstackeducation.miniprojeto2.util.JsonUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class NotaServiceImpl implements NotaService {
 
     private final NotaRepository notaRepository;
+    private final MatriculaRepository matriculaRepository;
 
-    public NotaServiceImpl(NotaRepository notaRepository) {
-        this.notaRepository = notaRepository;
-    }
+    /*
+    @Override
+    public NotaEntity criarNota(Long matriculaId, NotaEntity notaNova, BigDecimal coeficiente) {
+        notaNova.setId(null);
+        MatriculaEntity matricula = matriculaRepository.findById(matriculaId).orElseThrow(() -> new NotFoundException("Matrícula " + matriculaId +" não encontrada!"));
+        DisciplinaEntity disciplina = matricula.getDisciplina();
+        if (disciplina == null) {
+            throw new NotFoundException("Não foi possível encontrar uma disciplina nesta matrícula!");
+        }
+        ProfessorEntity professor = disciplina.getProfessorId();
+        if (professor == null) {
+            throw new NotFoundException("Não foi possível encontrar um professor!");
+        }
+        log.info("Criando nota -> Salvar: \n{}\n", JsonUtil.objetoParaJson(notaNova));
+        notaNova.setProfessor(professor);
+        notaNova.setCoeficiente(coeficiente);
+        NotaEntity nota = notaRepository.save(notaNova);
+        atualizarMediaFinal(matricula);
+        log.info("Criando nota -> Salvo com sucesso");
+        log.debug("Criando nota -> Registro Salvo: \n{}\n", JsonUtil.objetoParaJson(notaNova));
+        return notaNova;
+    }*/
 
     @Override
     public NotaEntity criarNota(NotaEntity notaNova) {
@@ -66,6 +93,10 @@ public class NotaServiceImpl implements NotaService {
         return notaRepository.save(nota);
     }
 
+    @Override
+    public NotaEntity calcularMedia(Long matriculaId) {
+        return null;
+    }
 
     @Override
     public void excluirNota(Long id) {
@@ -77,4 +108,32 @@ public class NotaServiceImpl implements NotaService {
         log.info("Excluindo nota com id ({}) -> Excluído com sucesso", id);
 
     }
+
+    /*
+    @Override
+    public void excluirNota(Long id) {
+        if (!notaRepository.existsById(id)) {
+            log.info("Excluindo nota com id ({}) -> Excluindo", id);
+            throw new NotFoundException("Nota não encontrada com o ID: " + id);
+        }
+
+        MatriculaEntity matricula = notaRepository.getMatricula();
+        if (matricula == null) {
+            throw new NotFoundException("Nota não encontrada nesta matrícula!");
+        }
+        notaRepository.deleteById(id);
+        atualizarMediaFinal(matricula);
+        log.info("Excluindo nota com id ({}) -> Excluído com sucesso", id);
+    }*/
+
+    /*
+    @Override
+    public List<NotaEntity> listarNotasPorMatricula(Long matriculaId) {
+        MatriculaEntity matricula = matriculaRepository.findById(matriculaId).orElseThrow(() -> new NotFoundException("Matrícula " + + matriculaId + " não encontrada!"));
+        log.info("Buscando todas as notas");
+        List<NotaEntity> notas = matricula.getNotas();
+        log.info("Buscando todas as notas -> {} notas encontradas", notaRepository.findAll().size());
+        log.debug("Buscando todas as notas -> Registros encontrados:\n{}\n", JsonUtil.objetoParaJson(notaRepository));
+        return matricula.getNotas();
+    }*/
 }

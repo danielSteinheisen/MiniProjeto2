@@ -30,8 +30,8 @@ public class DisciplinaServiceImpl implements DisciplinaService {
         disciplinaNova.setId(null);
 
         log.info("Criando disciplina -> Salvar: \n{}\n", JsonUtil.objetoParaJson(disciplinaNova));
-        ProfessorEntity professor = professorService.buscarProfessorPorId(disciplinaNova.getProfessor_id().getId());
-        disciplinaNova.setProfessor_id(professor);
+        ProfessorEntity professor = professorService.buscarProfessorPorId(disciplinaNova.getProfessorId().getId());
+        disciplinaNova.setProfessorId(professor);
 
         log.info("Criando disciplina -> Salvo com sucesso");
         log.debug("Criando disciplina -> Registro Salvo: \n{}\n", JsonUtil.objetoParaJson(disciplinaNova));

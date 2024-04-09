@@ -18,5 +18,4 @@ public interface AlunoService {
     AlunoEntity atualizarAluno(Long id, AlunoEntity aluno);
 
     void excluirAluno(Long id);
-
 }

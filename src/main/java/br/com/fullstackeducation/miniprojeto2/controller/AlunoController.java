@@ -2,7 +2,6 @@ package br.com.fullstackeducation.miniprojeto2.controller;
 
 import br.com.fullstackeducation.miniprojeto2.dto.AlunoFiltro;
 import br.com.fullstackeducation.miniprojeto2.entity.AlunoEntity;
-import br.com.fullstackeducation.miniprojeto2.service.AlunoService;
 import br.com.fullstackeducation.miniprojeto2.service.AlunoServiceImpl;
 import br.com.fullstackeducation.miniprojeto2.util.JsonUtil;
 import br.com.fullstackeducation.miniprojeto2.util.ParamUtil;

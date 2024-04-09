@@ -3,8 +3,8 @@ package br.com.fullstackeducation.miniprojeto2.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
@@ -13,8 +13,7 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @Table(name = "matriculas")
-
-public class MatriculaEntity {
+public class MatriculaEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,18 +27,12 @@ public class MatriculaEntity {
     @JoinColumn(name = "disciplina_id", nullable = false)
     private DisciplinaEntity disciplina;
 
-    @JoinColumn(name = "data_matricula", nullable = false)
-    private Date dataMatricula;
+    @Column(name = "data_matricula", nullable = false)
+    private Date dataMatricula = new Date();
 
-    @ColumnDefault(value = "0.00")
-    @Column(name="media_final", precision = 5,scale = 2,nullable = false)
+    @Column(name="media_final", precision = 5,scale = 2, nullable = false)
     @JoinColumn(name = "media_final")
-    private BigDecimal mediaFinal;
-
-    @JoinColumn(name = "aluno_id", nullable = false)
-    private Long AlunoId;
-
-    private Long DisciplinaId;
+    private BigDecimal mediaFinal = BigDecimal.valueOf(10.00);
 
     public Collection<Object> getNotas() {
         return null;

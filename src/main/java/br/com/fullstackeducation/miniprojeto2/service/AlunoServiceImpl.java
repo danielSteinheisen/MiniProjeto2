@@ -82,7 +82,6 @@ public class AlunoServiceImpl implements AlunoService {
 
     @Override
     public AlunoEntity atualizarAluno(Long id, AlunoEntity aluno) {
-
         AlunoEntity entity = buscarAlunoPorId(id);
         entity.setNome(aluno.getNome());
         entity.setNascimento(aluno.getNascimento());

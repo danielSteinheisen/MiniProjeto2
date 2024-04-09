@@ -18,6 +18,6 @@ public class DisciplinaEntity {
 
     @ManyToOne
     @JoinColumn(name = "professor_id", nullable = false)
-    private  ProfessorEntity professor_id;
+    private  ProfessorEntity professorId;
 
 }

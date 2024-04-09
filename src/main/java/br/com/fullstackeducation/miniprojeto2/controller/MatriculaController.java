@@ -1,5 +1,6 @@
 package br.com.fullstackeducation.miniprojeto2.controller;
 
+import br.com.fullstackeducation.miniprojeto2.entity.DisciplinaEntity;
 import br.com.fullstackeducation.miniprojeto2.entity.MatriculaEntity;
 import br.com.fullstackeducation.miniprojeto2.service.MatriculaServiceImpl;
 import br.com.fullstackeducation.miniprojeto2.util.JsonUtil;
@@ -21,29 +22,25 @@ public class MatriculaController {
         this.matriculaServiceImpl = matriculaServiceImpl;
     }
     @PostMapping
-    public ResponseEntity<MatriculaEntity> criarMatricula(@RequestBody MatriculaEntity matricula) {
+    public ResponseEntity<MatriculaEntity> criarMatricula(@RequestBody MatriculaEntity matriculaRequisicao) {
         log.info("POST /Matrícula -> Início");
+
+        MatriculaEntity matricula = matriculaServiceImpl.criarMatricula(matriculaRequisicao);
         log.info("POST /Matrícula -> Cadastrada");
         log.info("POST /Matrícula -> 201 CREATED");
-        log.info("POST /Matrícula -> Response Body: \n{}\n", JsonUtil
-                .objetoParaJson(matriculaServiceImpl.criarMatricula(matricula)));
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(matriculaServiceImpl.criarMatricula(matricula));
-    }
-    @PostMapping
-    public ResponseEntity<MatriculaEntity> matricularAlunoEmDisciplina(@RequestBody MatriculaEntity matriculaEntity) {
-        MatriculaEntity matricula = matriculaServiceImpl.matricularAlunoEmDisciplina
-                (matriculaEntity.getAlunoId(), matriculaEntity.getDisciplinaId());
+        log.info("POST /Matrícula -> Response Body: \n{}\n", JsonUtil.objetoParaJson(matricula));
         return ResponseEntity.status(HttpStatus.CREATED).body(matricula);
     }
+
     @GetMapping
     public ResponseEntity<List<MatriculaEntity>> listarMatriculas() {
         log.info("GET/Matrículas -> Início");
-        log.info("GET/Matrículas -> Encontrados {} registros", matriculaServiceImpl.listarMatriculas().size());
+
+        List<MatriculaEntity> matriculas = matriculaServiceImpl.listarMatriculas();
+        log.info("GET/Matrículas -> Encontrados {} registros", matriculas.size());
         log.info("GET/Matrículas  -> 200 ok");
-        log.info("GET/Matrículas  -> Response Body: \n{}\n", JsonUtil
-                .objetoParaJson(matriculaServiceImpl.listarMatriculas()));
-        return ResponseEntity.ok(matriculaServiceImpl.listarMatriculas());
+        log.info("GET/Matrículas  -> Response Body: \n{}\n", JsonUtil.objetoParaJson(matriculas));
+        return ResponseEntity.status(HttpStatus.OK).body(matriculas);
     }
     @GetMapping("/{id}")
     public ResponseEntity<MatriculaEntity> buscarMatriculaPorId(@PathVariable Long id) {

@@ -90,6 +90,15 @@ public class NotaServiceImpl implements NotaService {
 
     }
 
+    @Override
+    public List<NotaEntity> listarNotasPorMatricula(Long matriculaId) {
+        MatriculaEntity matricula = matriculaRepository.findById(matriculaId).orElseThrow(() -> new NotFoundException("Matrícula " + + matriculaId + " não encontrada!"));
+        log.info("Buscando todas as notas");
+        List<NotaEntity> notas = matricula.getNotas();
+        log.info("Buscando todas as notas -> {} notas encontradas", notaRepository.findAll().size());
+        log.debug("Buscando todas as notas -> Registros encontrados:\n{}\n", JsonUtil.objetoParaJson(notaRepository));
+        return matricula.getNotas();
+    }
 
     private void atualizarMediaFinal(MatriculaEntity matricula) {
 

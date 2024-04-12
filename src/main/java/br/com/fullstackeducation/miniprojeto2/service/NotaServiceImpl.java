@@ -1,13 +1,19 @@
 package br.com.fullstackeducation.miniprojeto2.service;
 
+import br.com.fullstackeducation.miniprojeto2.entity.DisciplinaEntity;
 import br.com.fullstackeducation.miniprojeto2.entity.MatriculaEntity;
 import br.com.fullstackeducation.miniprojeto2.entity.NotaEntity;
+import br.com.fullstackeducation.miniprojeto2.entity.ProfessorEntity;
 import br.com.fullstackeducation.miniprojeto2.exception.NotFoundException;
+import br.com.fullstackeducation.miniprojeto2.repository.MatriculaRepository;
 import br.com.fullstackeducation.miniprojeto2.repository.NotaRepository;
 import br.com.fullstackeducation.miniprojeto2.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,31 +22,38 @@ import java.util.Optional;
 public class NotaServiceImpl implements NotaService {
 
     private final NotaRepository notaRepository;
+    private final MatriculaRepository matriculaRepository;
 
-    public NotaServiceImpl(NotaRepository notaRepository) {
+    public NotaServiceImpl(NotaRepository notaRepository, MatriculaRepository matriculaRepository) {
         this.notaRepository = notaRepository;
+        this.matriculaRepository = matriculaRepository;
     }
 
     @Override
     public NotaEntity criarNota(Long matriculaId, NotaEntity notaNova, BigDecimal coeficiente) {
         notaNova.setId(null);
-        MatriculaEntity matricula = matriculaRepository.findById(matriculaId).orElseThrow(() -> NotFoundException("Matrícula " + matriculaId +" não encontrada!"))
+        MatriculaEntity matricula = matriculaRepository.findById(matriculaId).orElseThrow(() -> new NotFoundException("Matrícula " + matriculaId +" não encontrada!"));
         DisciplinaEntity disciplina = matricula.getDisciplina();
         if (disciplina == null) {
-            throw new NotFoundException("Não foi possível encontrar uma disciplina nesta matrícula!")
+            throw new NotFoundException("Não foi possível encontrar uma disciplina nesta matrícula!");
         }
-        ProfessorEntity professor = disciplina.getProfessor();
+        ProfessorEntity professor = disciplina.getProfessorId();
         if (professor == null) {
-            throw new NotFoundException("Não foi possível encontrar um professor!")
+            throw new NotFoundException("Não foi possível encontrar um professor!");
         }
         log.info("Criando nota -> Salvar: \n{}\n", JsonUtil.objetoParaJson(notaNova));
         notaNova.setProfessor(professor);
         notaNova.setCoeficiente(coeficiente);
-        NotaEntity nota = notaRepository.save(notaNova);
+        notaNova = notaRepository.save(notaNova);
         atualizarMediaFinal(matricula);
         log.info("Criando nota -> Salvo com sucesso");
         log.debug("Criando nota -> Registro Salvo: \n{}\n", JsonUtil.objetoParaJson(notaNova));
         return notaNova;
+    }
+
+    @Override
+    public NotaEntity criarNota(NotaEntity nota) {
+        return null;
     }
 
     @Override
@@ -78,6 +91,11 @@ public class NotaServiceImpl implements NotaService {
         return notaRepository.save(nota);
     }
 
+    @Override
+    public NotaEntity calcularMedia(Long matriculaId) {
+        return null;
+    }
+
 
     @Override
     public void excluirNota(Long id) {
@@ -86,7 +104,7 @@ public class NotaServiceImpl implements NotaService {
             throw new NotFoundException("Nota não encontrada com o ID: " + id);
         }
 
-        MatriculaEntity matricula = notaRepository.getMatricula();
+        MatriculaEntity matricula = notaRepository.getMatricula(id);
         if (matricula == null) {
             throw new NotFoundException("Nota não encontrada nesta matrícula!");
         }
@@ -97,11 +115,10 @@ public class NotaServiceImpl implements NotaService {
 
     }
 
-    @Override
-    public List<NotaEntity> listarNotasPorMatricula(Long matriculaId) {
+    public Collection<Object> listarNotasPorMatricula(Long matriculaId) {
         MatriculaEntity matricula = matriculaRepository.findById(matriculaId).orElseThrow(() -> new NotFoundException("Matrícula " + + matriculaId + " não encontrada!"));
         log.info("Buscando todas as notas");
-        List<NotaEntity> notas = matricula.getNotas();
+        Collection<Object> notas = matricula.getNotas();
         log.info("Buscando todas as notas -> {} notas encontradas", notaRepository.findAll().size());
         log.debug("Buscando todas as notas -> Registros encontrados:\n{}\n", JsonUtil.objetoParaJson(notaRepository));
         return matricula.getNotas();
@@ -109,7 +126,7 @@ public class NotaServiceImpl implements NotaService {
 
     private void atualizarMediaFinal(MatriculaEntity matricula) {
 
-        List<NotaEntity> notas = matricula.getNotas(matriculaId);
+        List<NotaEntity> notas = matricula.getNotas(null);
         BigDecimal somaNotas = notas.stream().map(notaNova -> notaNova.getValor().multiply(notaNova.getCoeficiente())).reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal somaCoeficientes = notas.stream().map(NotaEntity::getCoeficiente).reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal mediaFinal = somaNotas.divide(somaCoeficientes, RoundingMode.HALF_UP);

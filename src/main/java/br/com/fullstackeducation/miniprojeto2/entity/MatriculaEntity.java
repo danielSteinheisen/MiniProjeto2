@@ -8,6 +8,7 @@ import org.hibernate.annotations.ColumnDefault;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -42,6 +43,10 @@ public class MatriculaEntity {
     private Long DisciplinaId;
 
     public Collection<Object> getNotas() {
+        return null;
+    }
+
+    public List<NotaEntity> getNotas(Object matriculaId) {
         return null;
     }
 }

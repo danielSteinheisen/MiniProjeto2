@@ -32,4 +32,8 @@ public class NotaEntity {
     @ColumnDefault(value = "0.00")
     @Column(precision = 19,scale = 6, nullable = false)
     private BigDecimal coeficiente;
+
+    public BigDecimal getValor() {
+        return null;
+    }
 }

@@ -11,15 +11,16 @@ public interface MatriculaService {
 
     MatriculaEntity buscarPorId(Long id);
 
-    MatriculaEntity criar(MatriculaEntity entity);
-
-    MatriculaEntity alterar(Long id, MatriculaEntity entity);
-
     List<MatriculaEntity> buscarPorAlunoId(Long alunoId);
 
     List<MatriculaEntity> buscarPorDisciplinaId(Long disciplinaId);
 
-    void excluir(Long id);
+    BigDecimal calcularMediaGeralAluno(Long alunoId);
 
-    void calculoMediaFinal(BigDecimal somaCoeficientes, BigDecimal somaProdutosNotaCoeficiente, Long disciplinaId);
+
+    MatriculaEntity criar(MatriculaEntity entity);
+
+    MatriculaEntity alterar(Long id, MatriculaEntity entity);
+
+    void excluir(Long id);
 }

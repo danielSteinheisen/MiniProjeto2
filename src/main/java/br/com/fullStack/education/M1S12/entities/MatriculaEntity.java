@@ -1,11 +1,11 @@
 package br.com.fullStack.education.M1S12.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -31,6 +31,8 @@ public class MatriculaEntity {
     @Column(precision = 5, scale = 2, nullable = false)
     private BigDecimal mediaFinal = BigDecimal.valueOf(0.00);
 
-    //@OneToMany(mappedBy = "matricula")
-    //private List<NotaEntity> notas;
+    @JsonIgnore
+    @OneToMany(mappedBy = "matricula", fetch = FetchType.EAGER)
+    private List<NotaMatriculaEntity> notasMatriculas = new ArrayList<>();
+
 }

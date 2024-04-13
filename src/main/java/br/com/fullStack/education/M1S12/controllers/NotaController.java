@@ -1,7 +1,7 @@
 package br.com.fullStack.education.M1S12.controllers;
 
 import br.com.fullStack.education.M1S12.entities.NotaEntity;
-import br.com.fullStack.education.M1S12.facade.NotaFacade;
+import br.com.fullStack.education.M1S12.services.NotaService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,36 +14,37 @@ import java.util.List;
 @RequestMapping("notas")
 public class NotaController {
 
-    private final NotaFacade farcade;
+    private final NotaService service;
 
     @GetMapping
     public ResponseEntity<List<NotaEntity>> get() {
-        return ResponseEntity.ok(farcade.buscarTodos());
+        return ResponseEntity.ok(service.buscarTodos());
     }
 
     @GetMapping("{id}")
     public ResponseEntity<NotaEntity> getId(@PathVariable Long id) {
-        return ResponseEntity.ok(farcade.buscarPorId(id));
+        return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    @GetMapping("matricula-id/{matriculaId}")
+    public ResponseEntity<List<NotaEntity>> getMatriculaId(@PathVariable Long matriculaId) {
+        return ResponseEntity.ok(service.buscarPorMatricula(matriculaId));
     }
 
     @PostMapping
     public ResponseEntity<NotaEntity> post(@RequestBody NotaEntity request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(farcade.criar(request));
-    }
-
-    @GetMapping("disciplina-id/{disciplinaId}")
-    public ResponseEntity<List<NotaEntity>> getDisciplinaId(@PathVariable Long disciplinaId) {
-        return ResponseEntity.ok(farcade.buscarPorDisciplinaId(disciplinaId));
+        NotaEntity novaNota = service.criar(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novaNota);
     }
 
     @PutMapping("{id}")
     public ResponseEntity<NotaEntity> put(@PathVariable Long id, @RequestBody NotaEntity request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(farcade.alterar(id, request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.alterar(id, request));
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        farcade.excluir(id);
+        service.excluir(id);
         return ResponseEntity.noContent().build();
     }
 }

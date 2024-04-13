@@ -3,8 +3,10 @@ package br.com.fullStack.education.M1S12.services;
 import br.com.fullStack.education.M1S12.entities.*;
 import br.com.fullStack.education.M1S12.exceptions.NotFoundException;
 import br.com.fullStack.education.M1S12.repositories.MatriculaRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -17,7 +19,6 @@ public class MatriculaServiceImpl implements MatriculaService {
     private final MatriculaRepository repository;
     private final AlunoService alunoService;
     private final DisciplinaService disciplinaService;
-    private final NotaService notaService;
 
     @Override
     public List<MatriculaEntity> buscarTodos() {
@@ -25,9 +26,13 @@ public class MatriculaServiceImpl implements MatriculaService {
     }
 
     @Override
+    @Transactional
     public MatriculaEntity buscarPorId(Long id) {
-        return repository.findById(id)
+        MatriculaEntity matricula = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Matricula não encontrada com id: " + id));
+        // Carregar explicitamente as notas
+        matricula.getNotasMatriculas().size();
+        return matricula;
     }
 
     @Override
@@ -56,6 +61,27 @@ public class MatriculaServiceImpl implements MatriculaService {
     }
 
     @Override
+    public BigDecimal calcularMediaGeralAluno(Long alunoId) {
+        // Busca todas as matrículas do aluno
+        List<MatriculaEntity> matriculas = repository.findByAlunoId(alunoId);
+
+        BigDecimal somaMediasFinais = BigDecimal.ZERO;
+
+        // Calcula a soma das médias finais de todas as disciplinas
+        for (MatriculaEntity matricula : matriculas) {
+            somaMediasFinais = somaMediasFinais.add(matricula.getMediaFinal());
+        }
+
+        // Calcula a média geral
+        BigDecimal mediaGeralAluno = BigDecimal.ZERO;
+        if (!matriculas.isEmpty()) {
+            mediaGeralAluno = somaMediasFinais.divide(BigDecimal.valueOf(matriculas.size()), 2, RoundingMode.HALF_UP);
+        }
+
+        return mediaGeralAluno;
+    }
+
+    @Override
     public MatriculaEntity alterar(Long id, MatriculaEntity entity) {
         buscarPorId(id);
         entity.setId(id);
@@ -66,28 +92,6 @@ public class MatriculaServiceImpl implements MatriculaService {
     public void excluir(Long id) {
         MatriculaEntity entity = buscarPorId(id);
 
-        notaService.buscarPorDisciplinaId(entity.getDisciplina().getId());
-
         repository.delete(entity);
-    }
-
-    public void calculoMediaFinal(BigDecimal somaCoeficientes,
-                                  BigDecimal somaProdutosNotaCoeficiente,
-                                  Long disciplinaId) {
-        BigDecimal mediaFinal;
-        if (somaCoeficientes.compareTo(BigDecimal.ZERO) == 0) {
-            mediaFinal = BigDecimal.ZERO;
-        } else {
-            mediaFinal = somaProdutosNotaCoeficiente.divide(somaCoeficientes, 2, RoundingMode.HALF_UP);
-        }
-        atualizarMediaFinal(mediaFinal, disciplinaId);
-    }
-
-    private void atualizarMediaFinal (BigDecimal mediaFinal, Long disciplinaId) {
-        List<MatriculaEntity> matriculas = buscarPorDisciplinaId(disciplinaId);
-        for (MatriculaEntity matricula : matriculas) {
-            matricula.setMediaFinal(mediaFinal);
-            alterar(matricula.getId(), matricula);
-        }
     }
 }

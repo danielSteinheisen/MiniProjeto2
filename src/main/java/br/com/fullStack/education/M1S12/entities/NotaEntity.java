@@ -2,8 +2,6 @@ package br.com.fullStack.education.M1S12.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
-
 import java.math.BigDecimal;
 
 @Data
@@ -16,8 +14,8 @@ public class NotaEntity {
     protected Long id;
 
     @ManyToOne
-    @JoinColumn(name = "disciplina_id", nullable = false)
-    private DisciplinaEntity disciplina;
+    @JoinColumn(name = "matricula_id", nullable = false)
+    private MatriculaEntity matricula;
 
     @ManyToOne
     @JoinColumn(name = "professor_id", nullable = false)

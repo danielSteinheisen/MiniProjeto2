@@ -10,12 +10,11 @@ public interface NotaService {
 
     NotaEntity buscarPorId(Long id);
 
-    List<NotaEntity> buscarPorDisciplinaId(Long disciplinaId);
-
     NotaEntity criar(NotaEntity entity);
 
     NotaEntity alterar(Long id, NotaEntity entity);
 
     void excluir(Long id);
 
+    List<NotaEntity> buscarPorMatricula(Long matriculaId);
 }

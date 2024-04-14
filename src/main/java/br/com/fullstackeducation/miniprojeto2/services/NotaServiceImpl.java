@@ -7,11 +7,13 @@ import br.com.fullstackeducation.miniprojeto2.exceptions.NotFoundException;
 import br.com.fullstackeducation.miniprojeto2.repositories.MatriculaRepository;
 import br.com.fullstackeducation.miniprojeto2.repositories.NotaRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class NotaServiceImpl implements NotaService {
@@ -21,17 +23,22 @@ public class NotaServiceImpl implements NotaService {
 
     @Override
     public List<NotaEntity> buscarTodos() {
+        log.info("Buscando todas as notas");
         return repository.findAll();
     }
 
     @Override
     public NotaEntity buscarPorId(Long id) {
+        log.info("Buscando a nota pelo id: {}", id);
         return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Nota não encontrada com id: " + id));
+                .orElseThrow(() -> new NotFoundException(
+                        "Nota não encontrada com id: " + id
+                ));
     }
 
     @Override
     public List<NotaEntity> buscarPorMatricula(Long matriculaId) {
+        log.info("Buscando todas as notas da matricula com id: {}", matriculaId);
         matriculaRepository.findById(matriculaId)
                 .orElseThrow(() -> new NotFoundException("Matrícula não encontrada"));
         return repository.findByMatriculaId(matriculaId);
@@ -39,6 +46,7 @@ public class NotaServiceImpl implements NotaService {
 
     @Override
     public NotaEntity criar(NotaEntity entity) {
+        log.info("Criando uma nova nota: {}", entity);
         // Obtém a matrícula com base no "ID" fornecido
         MatriculaEntity matricula = matriculaRepository.findById(entity.getMatricula().getId())
                 .orElseThrow(() -> new NotFoundException("Matrícula não encontrada"));
@@ -93,6 +101,7 @@ public class NotaServiceImpl implements NotaService {
 
     @Override
     public NotaEntity alterar(Long id, NotaEntity entity) {
+        log.info("Alterando a nota com id: {} para: {}", id, entity);
         buscarPorId(id);
         entity.setId(id);
         return repository.save(entity);
@@ -100,6 +109,7 @@ public class NotaServiceImpl implements NotaService {
 
     @Override
     public void excluir(Long id) {
+        log.info("Excluindo a nota com id: {}", id);
 
         // Busca a nota pelo ID
         NotaEntity nota = buscarPorId(id);

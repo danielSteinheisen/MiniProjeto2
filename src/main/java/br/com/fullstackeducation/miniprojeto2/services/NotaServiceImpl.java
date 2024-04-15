@@ -61,6 +61,20 @@ public class NotaServiceImpl implements NotaService {
             throw new NotFoundException("O coeficiente deve estar entre 0 e 1");
         }
 
+        // Soma os coeficientes das notas relacionadas à matrícula
+        BigDecimal somaCoeficientes = BigDecimal.ZERO;
+        for (NotaEntity coeficientes : repository.findByMatriculaId(entity.getMatricula().getId())) {
+            somaCoeficientes = somaCoeficientes.add(coeficientes.getCoeficiente());
+        }
+
+        // Adiciona o coeficiente da nova nota à soma
+        somaCoeficientes = somaCoeficientes.add(entity.getCoeficiente());
+
+        // Verifica se a soma dos coeficientes é maior que 1
+        if (somaCoeficientes.compareTo(BigDecimal.ONE) > 0) {
+            throw new NotFoundException("A soma dos coeficientes não pode ultrapassar 1");
+        }
+
         // Calcula o produto da nota e coeficiente da nova nota
         BigDecimal novaNotaProduto = entity.getNota().multiply(entity.getCoeficiente());
 
